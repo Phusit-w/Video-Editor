@@ -26,6 +26,10 @@ _Avoid_: Content plan, list
 หน้าที่เก็บ Core Idea ทุกตัวพร้อมสถานะ และเป็นที่ที่ Human Gate เกิดขึ้น
 _Avoid_: Dashboard, tracker, backlog
 
+**Topic Inbox**:
+ช่องบน Idea Board ที่คนใส่หัวข้อหรือคำถามลูกค้าไว้ ให้ Ideation ใช้ก่อนแหล่งอื่นในรอบถัดไป
+_Avoid_: Idea request, suggestion box
+
 ### การจัดหมวด
 
 **Primary Pillar**:
@@ -65,6 +69,23 @@ _Avoid_: Risk level, compliance status
 **Rejection Reason**:
 เหตุผลที่คนไม่อนุมัติ Core Idea ซึ่ง Ideation ต้องอ่านก่อนเสนอชุดถัดไป
 _Avoid_: Feedback, comment (เมื่อหมายถึงเรื่องนี้)
+
+### สถานะของ Core Idea
+
+**Proposed**:
+Core Idea ที่ Ideation เสนอเข้ามาและรอ Human Gate
+
+**Revise**:
+Core Idea ที่คนขอให้แก้พร้อมคอมเมนต์ — Ideation ต้องแก้แล้วคืนเป็น Proposed
+
+**Rejected**:
+Core Idea ที่ไม่ผ่าน Human Gate และต้องมี Rejection Reason
+
+**Approved**:
+Core Idea ที่ผ่าน Human Gate และพร้อมให้ Asset Production รับไป — อนุมัติไม่ได้ถ้า Claim Status เป็น HOLD
+
+**In Production**:
+Core Idea ที่ Asset Production รับไปผลิต Asset แล้ว
 
 ## Subsystems
 
