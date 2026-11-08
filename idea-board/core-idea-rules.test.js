@@ -73,14 +73,33 @@ test("more than one Primary Pillar fails", () => {
   assert.deepEqual(fields(result), ["primaryPillar"]);
 });
 
-test("DIRECT without SKU fails; DIRECT with SKU passes", () => {
+const CASTILE = "AMOURIQ Organic Olive Castile Soap Lavender";
+
+test("DIRECT without SKU fails; DIRECT with each Product Registry SKU passes", () => {
   assert.deepEqual(fields(validateCoreIdea(validCoreIdea({ productLinkage: "DIRECT" }))), ["sku"]);
-  assert.equal(validateCoreIdea(validCoreIdea({ productLinkage: "DIRECT", sku: "Castile Soap" })).ok, true);
+  for (const sku of [
+    "AMOURIQ Organic Olive Castile Soap Lavender",
+    "AMOURIQ Organic Virgin Castor Nourishing Oil",
+    "AMOURIQ Organic Virgin Rosehip Nourishing Oil",
+  ]) {
+    assert.equal(validateCoreIdea(validCoreIdea({ productLinkage: "DIRECT", sku })).ok, true, sku);
+  }
+});
+
+test("DIRECT with a SKU outside the Product Registry fails", () => {
+  for (const sku of [
+    "Castile Soap",                                  // shorthand, not the registry name
+    "AMOURIQ Organic Olive Castile Soap Rosemary",   // in the shop, not in the Product Reference Master
+    "Lavender France Essential Oil",                 // essential oils have no Product Profile
+    "amouriq organic virgin castor nourishing oil",  // wrong case: SKU names are exact
+  ]) {
+    assert.deepEqual(fields(validateCoreIdea(validCoreIdea({ productLinkage: "DIRECT", sku }))), ["sku"], sku);
+  }
 });
 
 test("NONE or SOFT with a SKU fails (SKU only when DIRECT)", () => {
-  assert.deepEqual(fields(validateCoreIdea(validCoreIdea({ productLinkage: "NONE", sku: "Castile Soap" }))), ["sku"]);
-  assert.deepEqual(fields(validateCoreIdea(validCoreIdea({ productLinkage: "SOFT", sku: "Castile Soap" }))), ["sku"]);
+  assert.deepEqual(fields(validateCoreIdea(validCoreIdea({ productLinkage: "NONE", sku: CASTILE }))), ["sku"]);
+  assert.deepEqual(fields(validateCoreIdea(validCoreIdea({ productLinkage: "SOFT", sku: CASTILE }))), ["sku"]);
   assert.equal(validateCoreIdea(validCoreIdea({ productLinkage: "SOFT" })).ok, true);
 });
 

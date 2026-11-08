@@ -17,6 +17,14 @@ export const FUNNEL_STAGES = ["Awareness", "Consideration", "Conversion", "Reten
 export const CLAIM_STATUSES = ["ผ่าน", "ต้องระวัง", "HOLD"];
 export const STATUSES = ["Proposed", "Revise", "Rejected", "Approved", "In Production"];
 
+// The three SKUs of AMOURIQ_PRODUCT_REFERENCE_MASTER.md §2 Product Registry, exact names.
+// Other shop products have no Product Profile, so a DIRECT Core Idea cannot name them.
+export const SKUS = [
+  "AMOURIQ Organic Olive Castile Soap Lavender",   // Thai FDA 10-1-6800022354
+  "AMOURIQ Organic Virgin Castor Nourishing Oil",  // Thai FDA 10-1-6900029015
+  "AMOURIQ Organic Virgin Rosehip Nourishing Oil", // Thai FDA 10-1-6900030285
+];
+
 // A Topic Territory about science, skin, hair or regulation needs at least one evidence source.
 // Matched by keyword, not exact name, so "Skin health" or "Regulation" cannot slip past
 // (glossary examples: Skin Health, Hair & Scalp, Cosmetic Literacy, Claims/Regulation).
@@ -69,6 +77,8 @@ export function validateCoreIdea(record) {
   // SKU is set only when Product Linkage is DIRECT (handoff 2026-11-06 decision).
   if (record.productLinkage === "DIRECT" && !isText(record.sku)) {
     fail("sku", "Product Linkage เป็น DIRECT ต้องระบุ SKU");
+  } else if (record.productLinkage === "DIRECT" && !SKUS.includes(record.sku)) {
+    fail("sku", `SKU "${record.sku}" ไม่อยู่ใน Product Reference Master — ใช้ได้เฉพาะ: ${SKUS.join(" / ")}`);
   } else if (PRODUCT_LINKAGES.includes(record.productLinkage) && record.productLinkage !== "DIRECT"
     && record.sku !== undefined && record.sku !== null && record.sku !== "") {
     fail("sku", "ระบุ SKU ได้เฉพาะเมื่อ Product Linkage เป็น DIRECT");

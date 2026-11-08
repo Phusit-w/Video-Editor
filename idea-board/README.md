@@ -20,12 +20,12 @@ The board lists Core Ideas newest first (status, Pillar, linkage, Claim Status a
 
 `core-idea-rules.js` owns the Core Idea record shape and every status rule (spec issue #1). It exports:
 
-- `validateCoreIdea(record)` → `{ok, errors: [{field, message}]}`: required fields, allowed values, one Primary Pillar, SKU only and always when DIRECT, an evidence source when the Topic Territory is about science, skin, hair or regulation (`needsEvidence`, keyword match in English and Thai), a Claim reason unless ผ่าน, and a Revise comment / Rejection Reason matching the status.
+- `validateCoreIdea(record)` → `{ok, errors: [{field, message}]}`: required fields, allowed values, one Primary Pillar, SKU only and always when DIRECT and then exactly one of the three `SKUS` from the Product Reference Master's Product Registry, an evidence source when the Topic Territory is about science, skin, hair or regulation (`needsEvidence`, keyword match in English and Thai), a Claim reason unless ผ่าน, and a Revise comment / Rejection Reason matching the status.
 - `applyTransition(record, {actor, to, comment?, reason?, riskAcknowledged?})` → `{ok, record}` or `{ok: false, code, reason}`. Actors: `Ideation` (new → Proposed, Revise → Proposed), `Human` (Proposed → Approved | Revise | Rejected), `Asset Production` (Approved → In Production). HOLD is never approved; ต้องระวัง needs `riskAcknowledged: true`; Approved, Proposed and In Production need a valid record, while Revise and Rejected work on any Proposed record so a broken Core Idea can still be sent back or turned down. Ideation creates a Core Idea by passing the record *without* a `status`; it then comes back with `status: "Proposed"`. A re-proposed Revise Core Idea keeps its `reviseComment` and loses any earlier `riskAcknowledged`.
 
 Every writer goes through it: the board before each Idea Gate action (re-applied to the freshly read document), the weekly Ideation run before writing, Asset Production before claiming. A cloud scheduled task without this repo can fetch the published copy with the Artifact tool (`action: "read"`, `path: "core-idea-rules.js"`).
 
-Not yet enforced: the SKU allow-list (the three SKU names from the Product Reference Master are not in this repo yet; any non-empty SKU passes) and Idea Batch validation (tickets 3–4).
+Not yet enforced: Idea Batch validation (tickets 3–4). When the Product Registry gains a SKU, add its exact name to `SKUS` with a test.
 
 Tests: `npm test` (Node's built-in runner, no dependencies).
 
