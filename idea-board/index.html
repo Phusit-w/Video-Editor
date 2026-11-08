@@ -1,0 +1,124 @@
+<title>AMOURIQ Idea Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&family=DM+Sans:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow reading column of Core Idea cards, newest first. Prototype (ticket 1) — brand styling arrives in ticket 7. */
+:root {
+  --bg: #f6f4ef;
+  --surface: #ffffff;
+  --fg: #2b2a26;
+  --muted: #6f6c63;
+  --line: #e2ded4;
+  --accent: #5f6b45;
+  --pill-bg: #eceee4;
+  --font-th: "Prompt", "Noto Sans Thai", "Leelawadee UI", system-ui, sans-serif;
+  --font-en: "DM Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1c19; --surface: #26261f; --fg: #ecebe4; --muted: #a8a596; --line: #3a3a31; --accent: #b5c290; --pill-bg: #33372a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1c1c19; --surface: #26261f; --fg: #ecebe4; --muted: #a8a596; --line: #3a3a31; --accent: #b5c290; --pill-bg: #33372a;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-th); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+.wrap { max-width: 720px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: grid; gap: 4px; }
+h1 { font-size: 1.5rem; font-weight: 600; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: .9rem; margin: 0; }
+.status-line { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.list { display: grid; gap: 12px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px; display: grid; gap: 8px; min-width: 0;
+}
+.meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill {
+  font-family: var(--font-en); font-size: .75rem; letter-spacing: .02em;
+  background: var(--pill-bg); color: var(--accent); border-radius: 999px; padding: 2px 10px;
+}
+.pill.status { background: var(--accent); color: var(--surface); }
+.hook { font-size: 1.05rem; font-weight: 500; margin: 0; overflow-wrap: anywhere; }
+.msg { margin: 0; color: var(--fg); overflow-wrap: anywhere; }
+.foot { font-family: var(--font-en); font-size: .78rem; color: var(--muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.empty {
+  border: 1px dashed var(--line); border-radius: 10px; padding: 24px 16px;
+  color: var(--muted); text-align: center;
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Idea Board</h1>
+    <p class="sub">Core Idea ทั้งหมดและสถานะ — เวอร์ชันต้นแบบ</p>
+  </header>
+  <div class="status-line" id="statusLine">กำลังโหลด Core Idea…</div>
+  <div class="list" id="list"></div>
+  <div class="empty" id="empty" hidden>ยังไม่มี Core Idea — รอบ Ideation ถัดไปจะเขียนลงที่นี่</div>
+</div>
+
+<script>
+const listEl = document.getElementById("list");
+const emptyEl = document.getElementById("empty");
+const statusLine = document.getElementById("statusLine");
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function render(ideas) {
+  listEl.replaceChildren();
+  emptyEl.hidden = ideas.length > 0;
+  statusLine.textContent = ideas.length ? `ทั้งหมด ${ideas.length} Core Idea` : "";
+  for (const idea of ideas) {
+    const card = el("article", "card");
+    const meta = el("div", "meta");
+    meta.append(el("span", "pill status", idea.status || "—"));
+    if (idea.primaryPillar) meta.append(el("span", "pill", idea.primaryPillar));
+    if (idea.productLinkage) meta.append(el("span", "pill", idea.productLinkage + (idea.sku ? " · " + idea.sku : "")));
+    if (idea.claimStatus) meta.append(el("span", "pill", "Claim: " + idea.claimStatus));
+    card.append(meta);
+    card.append(el("p", "hook", idea.hook || "(ไม่มี Hook)"));
+    if (idea.keyMessage) card.append(el("p", "msg", idea.keyMessage));
+    const when = idea.createdAt ? new Date(idea.createdAt).toLocaleString("th-TH", { timeZone: "Asia/Bangkok" }) : "";
+    card.append(el("div", "foot", [idea.id, idea.batchId, when].filter(Boolean).join(" · ")));
+    listEl.append(card);
+  }
+}
+
+(async () => {
+  const timer = setTimeout(() => {
+    statusLine.textContent = "โหลดข้อมูลไม่สำเร็จ — ลองเปิดหน้านี้ใหม่อีกครั้ง";
+  }, 10000);
+  const db = await claude.use("db");
+  if (!db) {
+    clearTimeout(timer);
+    statusLine.textContent = "ต้องลงชื่อเข้าใช้ claude.ai เพื่อดู Core Idea";
+    return;
+  }
+  db.collection("coreIdeas").onSnapshot(
+    (snap) => {
+      clearTimeout(timer);
+      const ideas = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      ideas.sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+      render(ideas);
+    },
+    (err) => {
+      clearTimeout(timer);
+      statusLine.textContent = "อ่านฐานข้อมูลไม่ได้: " + (err && err.message ? err.message : "ไม่ทราบสาเหตุ");
+    }
+  );
+})();
+</script>
