@@ -2,7 +2,7 @@
 
 Ticket: **Prototype: scheduled task writes a Core Idea to the Idea Board** (draft ticket 1 in `2026-11-06-ideation.md`; not yet published as an issue).
 
-## Result: PASS — ADR 0002 stands
+## Result: PASS on the store question — ADR 0002 stands (desktop/mobile check by the owner still pending)
 
 - Idea Board published: https://claude.ai/artifact/5dV7v7iXxFq8oc3r82ayBS (source `idea-board/index.html`, notes `idea-board/README.md`). Lists `coreIdeas` from its shared database, newest first, responsive single column.
 - One-shot scheduled task "Idea Board prototype write" (prompt in `ideation/prototype-task-prompt.md`) fired 2026-11-08 09:56 UTC in a fresh cloud session, permission mode auto, and wrote `coreIdeas/proto-test-001` with `ArtifactData` set. Run status SUCCEEDED (~24 s).
@@ -20,4 +20,4 @@ Ticket: **Prototype: scheduled task writes a Core Idea to the Idea Board** (draf
 
 ## Cleanup
 
-- `proto-test-001` is test data; delete it once the owner has seen it (or leave until ticket 2 needs a clean board).
+- `proto-test-001` is test data and deliberately breaks the rules (Skin Health with no evidence source, yet Claim ผ่าน); it must be gone before ticket 2's validation runs. Delete it once the owner has seen it.

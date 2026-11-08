@@ -1,4 +1,4 @@
-You are running a one-time prototype check for the AMOURIQ Idea Board (ticket 1 of the Ideation spec, GitHub Phusit-w/Video-Editor issue #1).
+You are running a one-time prototype check for the AMOURIQ Idea Board (ticket 1 under the Ideation spec, which is GitHub Phusit-w/Video-Editor issue #1).
 
 Goal: prove that a Claude scheduled task can write a Core Idea into the Idea Board's shared database. Do nothing else — no research, no other files, no messages to anyone.
 

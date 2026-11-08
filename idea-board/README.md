@@ -12,7 +12,7 @@ The Idea Board is a published Claude Artifact with its own shared database (ADR 
 |---|---|---|
 | `coreIdeas` | Core Idea id | Ideation (scheduled task, via `ArtifactData`), later the board's Human Gate buttons (ticket 2) |
 
-Field names follow the Core Idea record in spec #1 (camelCase): `batchId`, `createdAt` (ISO 8601 UTC), `status`, `primaryPillar`, `topicTerritory`, `productLinkage`, `sku`, `contentJob`, `funnelStage`, `readerProblem`, `hook`, `keyMessage`, `evidenceSources` (`[{title, url}]`), `caveats`, `claimStatus`, `claimReason`, `suggestedFormat`, `targetChannels`, `topicInboxId`, `reviseComment`, `rejectionReason`, `riskAcknowledged`.
+Field names follow the Core Idea record in spec issue #1 (camelCase), until ticket 2's Core Idea Rules module owns the shape: `batchId`, `createdAt` (ISO 8601 UTC), `status`, `primaryPillar`, `topicTerritory`, `productLinkage`, `sku`, `contentJob`, `funnelStage`, `readerProblem`, `hook`, `keyMessage`, `evidenceSources` (`[{title, url}]`), `caveats`, `claimStatus`, `claimReason`, `suggestedFormat`, `targetChannels`, `topicInboxId`, `reviseComment`, `rejectionReason`, `riskAcknowledged`. Writers may add `createdBy` (e.g. `scheduled-task`).
 
 The board currently lists Core Ideas newest first (status, Pillar, linkage, Claim Status, Hook, key message). No actions yet — those come in ticket 2.
 
